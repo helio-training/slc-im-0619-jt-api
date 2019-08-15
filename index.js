@@ -1,27 +1,54 @@
 const express = require("express")
 const cors = require("cors")
+const MongoClient = require("mongodb").MongoClient;
 const app = express()
 const port = process.env.PORT || 4000
+const db_url =
+  "mongodb+srv://instructor:g7VppVh2tnXlfsNS@helio-slc-uocvs.mongodb.net/jobTracker?retryWrites=true&w=majority";
+
+const client = new MongoClient(db_url, { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(express.json())
 app.use(cors())
 
 //get all leads
 app.get('/leads', (req, res) => {
-    res.send("Successful get all leads!");
+  client.connect (err => {
+    const collection = client.db("jobTracker").collection("Leads");
+    // perform actions on the collection object
+    const results = collection.find({}).toArray((err, docs)=> {
+      console.log(docs)
+      res.send(docs)
+    });
+
+    client.close();
+  });
 });
+
 
 //get leads by search, using two path params
 app.get("/leads/:key/:value", (req, res) => {
-  res.send(
-    `Successful get search leads! ${req.params.key} : ${req.params.value}`
-  );
+  client.connect(err => {
+    const collection = client.db("jobTracker").collection("Leads");
+    // perform actions on the collection object
+    const results = collection
+      .find({ [req.params.key]: req.params.value }) // Using [computed_property_name] for dynamic key naming
+      .toArray((err, docs) => {
+        console.log(docs);
+        res.send(docs);
+      });
+
+    client.close();
+  });
+  // res.send(
+  //   `Successful get search leads! ${req.params.key} : ${req.params.value}`
+  // );
 });
 
 //post new lead
 app.post("/leads", (req, res) => {
     const body = req.body;
-  res.send(`Posted. ${body}`);
+  res.send(`Posted. ${body.name}`);
 });
 
 //update lead by ID
