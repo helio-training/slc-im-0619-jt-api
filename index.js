@@ -1,6 +1,8 @@
 const express = require("express")
 const cors = require("cors")
 const MongoClient = require("mongodb").MongoClient;
+const ObjectId = require("mongodb").ObjectId;
+
 const app = express()
 const port = process.env.PORT || 4000
 const db_url =
@@ -48,19 +50,44 @@ app.get("/leads/:key/:value", (req, res) => {
 //post new lead
 app.post("/leads", (req, res) => {
     const body = req.body;
-  res.send(`Posted. ${body.name}`);
+    client.connect(async err => {
+      const collection = client.db("jobTracker").collection("Leads");
+      // perform actions on the collection object
+      const results = await collection.insertOne(body)
+      res.send(results.insertedId);
+      
+      client.close();
+    });
 });
 
 //update lead by ID
 app.put("/leads/:ID", (req, res) => {
   const body = req.body;
-  res.send(`Putted. ${body} ${req.params.ID}`);
+  //res.send(`Putted. ${body} ${req.params.ID}`);
+  client.connect(async err => {
+    const collection = client.db("jobTracker").collection("Leads");
+    // perform actions on the collection object
+    const results = await collection.updateOne({_id: ObjectId(req.params.ID)},{$set: body});
+    res.send(results);
+
+    client.close();
+  });
 });
 
 //delete lead by ID
 app.delete("/leads/:ID", (req, res) => {
-  res.send(`Deleted. ${req.params.ID}`);
+  // res.send(`Deleted. ${req.params.ID}`);
+  client.connect(async err => {
+    const collection = client.db("jobTracker").collection("Leads");
+    // perform actions on the collection object
+    const results = await collection.deleteOne({_id: ObjectId(req.params.ID)});
+    res.send(results);
+
+    client.close();
+  });
 });
+
+
 
 
 
