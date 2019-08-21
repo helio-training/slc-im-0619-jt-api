@@ -4,7 +4,7 @@ const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectId;
 
 const app = express()
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 5000
 const db_url =
   "mongodb+srv://instructor:g7VppVh2tnXlfsNS@helio-slc-uocvs.mongodb.net/jobTracker?retryWrites=true&w=majority";
 
@@ -42,9 +42,6 @@ app.get("/leads/:key/:value", (req, res) => {
 
     client.close();
   });
-  // res.send(
-  //   `Successful get search leads! ${req.params.key} : ${req.params.value}`
-  // );
 });
 
 //post new lead
@@ -63,7 +60,6 @@ app.post("/leads", (req, res) => {
 //update lead by ID
 app.put("/leads/:ID", (req, res) => {
   const body = req.body;
-  //res.send(`Putted. ${body} ${req.params.ID}`);
   client.connect(async err => {
     const collection = client.db("jobTracker").collection("Leads");
     // perform actions on the collection object
@@ -76,7 +72,6 @@ app.put("/leads/:ID", (req, res) => {
 
 //delete lead by ID
 app.delete("/leads/:ID", (req, res) => {
-  // res.send(`Deleted. ${req.params.ID}`);
   client.connect(async err => {
     const collection = client.db("jobTracker").collection("Leads");
     // perform actions on the collection object
@@ -86,11 +81,6 @@ app.delete("/leads/:ID", (req, res) => {
     client.close();
   });
 });
-
-
-
-
-
 
 
 app.listen(port,() => {console.log(`Listening on port ${port}`)})
