@@ -45,13 +45,26 @@ app.get("/leads/:key/:value", (req, res) => {
 });
 
 //post new lead
-app.post("/leads", (req, res) => {
+app.post("/lead", (req, res) => {
     const body = req.body;
     client.connect(async err => {
       const collection = client.db("jobTracker").collection("Leads");
       // perform actions on the collection object
       const results = await collection.insertOne(body)
       res.send(results.insertedId);
+      
+      client.close();
+    });
+});
+
+//post many new leads
+app.post("/leads", (req, res) => {
+    const body = req.body;
+    client.connect(async err => {
+      const collection = client.db("jobTracker").collection("Leads");
+      // perform actions on the collection object
+      const results = await collection.insertMany(body)
+      res.send(results);
       
       client.close();
     });
