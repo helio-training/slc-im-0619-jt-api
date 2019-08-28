@@ -48,10 +48,14 @@ app.get("/leads/:key/:value", (req, res) => {
 app.post("/lead", (req, res) => {
     const body = req.body;
     client.connect(async err => {
-      const collection = client.db("jobTracker").collection("Leads");
-      // perform actions on the collection object
-      const results = await collection.insertOne(body)
-      res.send(results.insertedId);
+      if(!err) {
+        const collection = client.db("jobTracker").collection("Leads");
+        // perform actions on the collection object
+        const results = await collection.insertOne(body);
+        res.send(results.insertedId);
+      }else {
+        console.log(err)
+      }
       
       client.close();
     });
