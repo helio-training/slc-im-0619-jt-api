@@ -2,11 +2,11 @@ const express = require("express")
 const cors = require("cors")
 const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectId;
+require('dotenv').config()
 
 const app = express()
 const port = process.env.PORT || 5000
-const db_url =
-  "mongodb+srv://instructor:g7VppVh2tnXlfsNS@helio-slc-uocvs.mongodb.net/jobTracker?retryWrites=true&w=majority";
+const db_url = process.env.DB_CONNECT
 
 const client = new MongoClient(db_url, { useNewUrlParser: true, useUnifiedTopology: true });
 
